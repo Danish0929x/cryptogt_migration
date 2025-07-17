@@ -16,13 +16,16 @@ const packageSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  cgtCoin: {
+    type: Number, // CGT Coin
+    required: true
+  },
+  txnId: {
+    type: String
+  },
   poi: {
     type: Number,
     required: true
-  },
-  booster: {
-    type: Boolean,
-    default: false
   },
   productVoucher: {
     type: Boolean,
