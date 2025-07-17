@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const Package = require("../models/Packages"); // Import your Package model
-const usersData = require("../rawdata/users.json"); // Import your users JSON data
-const packageData = require("../rawdata/package1.json"); // Import your package JSON data
+const Package = require("../models/Packages");
+const usersData = require("../rawdata/users.json");
+const packageData = require("../rawdata/package1.json");
 
 // Connect to MongoDB
 mongoose.connect("mongodb+srv://cryptogt:cryptogt@cluster0.qeuff.mongodb.net/Cryptography?retryWrites=true&w=majority&appName=Cluster0", {
@@ -9,15 +9,15 @@ mongoose.connect("mongodb+srv://cryptogt:cryptogt@cluster0.qeuff.mongodb.net/Cry
   useUnifiedTopology: true,
 });
 
-// Create a map of user_id to register_id for quick lookup
-const userMap = {};
+// Create a map of user id to register_id
+const userRegisterMap = {};
 usersData.forEach(user => {
-  userMap[user.id] = user.register_id;
+  userRegisterMap[user.id] = user.register_id; // Maps user.id (like "7") to register_id (like "CGT4788145")
 });
 
 // Map JSON fields to Mongoose schema
 const transformPackage = (package) => {
-  const cgtCoin = (package.amount / 22);
+  const cgtCoin = (parseFloat(package.amount) / 22);
   const createdAt = new Date(package.created_at);
   const today = new Date();
   const daysPassed = Math.min(
@@ -26,16 +26,22 @@ const transformPackage = (package) => {
   );
   const poi = +(cgtCoin * 0.005 * daysPassed).toFixed(5);
 
+  // Get the register_id for this package's user_id
+  const registerId = userRegisterMap[package.user_id];
+  if (!registerId) {
+    console.warn(`No register_id found for user_id: ${package.user_id}`);
+  }
+
   return {
-    userId: userMap[package.user_id], // Get register_id from the userMap
+    userId: registerId, // This will be like "CGT4788145" for user_id "7"
     packageType: "Leader",
-    packageAmount: package.amount,
+    packageAmount: parseFloat(package.amount),
     cgtCoin: cgtCoin.toFixed(5),
     txnId: package.transaction_hash || null,
     poi: poi,
     productVoucher: false,
-    startDate: package.created_at || null,
-    status: true, 
+    startDate: package.created_at ? new Date(package.created_at) : null,
+    status: package.status === "1",
   };
 };
 
