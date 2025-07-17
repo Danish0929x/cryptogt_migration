@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const Package = require("./models/Package"); // Import your Package model
-const usersData = require("./rawdata/users.json"); // Import your users JSON data
-const packageData = require("./rawdata/package1.json"); // Import your package JSON data
+const Package = require("../models/Packages"); // Import your Package model
+const usersData = require("../rawdata/users.json"); // Import your users JSON data
+const packageData = require("../rawdata/package1.json"); // Import your package JSON data
 
 // Connect to MongoDB
 mongoose.connect("mongodb+srv://cryptogt:cryptogt@cluster0.qeuff.mongodb.net/Cryptography?retryWrites=true&w=majority&appName=Cluster0", {
