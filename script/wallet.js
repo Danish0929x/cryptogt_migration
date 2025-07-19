@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const User = require("./models/User"); // Import your User model
-const usersData = require("./rawdata/users.json"); // Import your JSON data
+const User = require("../models/User"); // Import your User model
+const usersData = require("../rawdata/users.json"); // Import your JSON data
 const Wallet = require("../models/Wallet");
 
 // Connect to MongoDB
@@ -16,6 +16,8 @@ mongoose.connect(
 const transformUser = (user) => ({
   userId: user.register_id,
   CGTBalance: 0,
+  autopoolBalance: 0,
+  utilityBalance: 0,
 });
 
 // Insert users into MongoDB
