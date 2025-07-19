@@ -1,28 +1,33 @@
 const mongoose = require("mongoose");
-const User = require("./models/User"); // Import your User model
-const usersData = require("./rawdata/users.json"); // Import your JSON data
+const User = require("../models/User");
+const usersData = require("../rawdata/users.json");
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://cryptogt:cryptogt@cluster0.qeuff.mongodb.net/Cryptography?retryWrites=true&w=majority&appName=Cluster0", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+mongoose.connect("mongodb+srv://cryptogt:cryptogt@cluster0.qeuff.mongodb.net/Cryptography?retryWrites=true&w=majority&appName=Cluster0");
+
+// STEP 1: Create map of `id` → `register_id`
+const idToRegisterIdMap = {};
+usersData.forEach((user) => {
+  if (user.id && user.register_id) {
+    idToRegisterIdMap[user.id] = user.register_id;
+  }
 });
 
-// Map JSON fields to Mongoose schema
+// STEP 2: Transform user with parentId resolved to register_id
 const transformUser = (user) => ({
   walletAddress: user.wallet_address,
   userId: user.register_id,
   name: user.name || null,
   email: user.email || null,
   phone: user.mobile || null,
-  parentId: user.parent_id,
-  verified: user.status === "1", // Convert "1" to true, others to false
-  rewardStatus: "User", // Default (adjust based on rank_id if needed)
-  blockStatus: user.user_status !== "1", // Assuming "1" means active
-  isRewardBlock: user.is_reward_block === "1", // Convert to boolean
+  parentId: idToRegisterIdMap[user.parent_id] || null, // Replace numeric id with register_id
+  verified: user.status === "1",
+  rewardStatus: "User",
+  blockStatus: user.user_status !== "1",
+  isRewardBlock: user.is_reward_block === "1",
 });
 
-// Insert users into MongoDB
+// STEP 3: Migrate
 const migrateUsers = async () => {
   try {
     const transformedUsers = usersData.map(transformUser);
