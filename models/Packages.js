@@ -38,8 +38,8 @@ const packageSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: Requested,
-    enum:[Active, InActive, Requested]
+    enum: ['Active', 'Inactive', 'Requested'],
+    default: "Requested"
   }
   
 }, { timestamps: true });
