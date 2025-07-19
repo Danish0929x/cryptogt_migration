@@ -34,7 +34,10 @@ const transactionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  metadata: mongoose.Schema.Types.Mixed
-}, { timestamps: true });
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
 
 module.exports = mongoose.model('Transaction', transactionSchema);
