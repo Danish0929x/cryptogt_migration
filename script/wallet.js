@@ -18,7 +18,7 @@ const calculateUserBalances = async () => {
   usersData.forEach((user) => {
     userBalances[user.id] = {
       userId: user.register_id,
-      CGTBalance: 0,
+      USDTBalance: 0,
       autopoolBalance: 0,
       utilityBalance: 0,
     };
@@ -76,9 +76,9 @@ const calculateUserBalances = async () => {
           if (userBalances[userId]) {
             // CGT Balance calculation: trans in (1, 2, 4, 6, 7) only, minus trans 9 (withdraw)
             if (["1", "2", "4", "6", "7"].includes(transType)) {
-              userBalances[userId].CGTBalance += amount;
+              userBalances[userId].USDTBalance += amount;
             } else if (["0", "8", "5", "9"].includes(transType)) {
-              userBalances[userId].CGTBalance -= amount; // Withdraw - subtract from balance
+              userBalances[userId].USDTBalance -= amount; // Withdraw - subtract from balance
             }
 
             // // Autopool Balance calculation: trans 6 (autopool reward) - trans 5 (autopool deposit)
@@ -108,7 +108,7 @@ const calculateUserBalances = async () => {
   // Convert to array and ensure 5 decimal precision
   return Object.values(userBalances).map((balance) => ({
     userId: balance.userId,
-    CGTBalance: parseFloat((balance.CGTBalance / 22).toFixed(5)),
+    USDTBalance: parseFloat((balance.USDTBalance ).toFixed(5)),
     autopoolBalance: parseFloat(balance.autopoolBalance.toFixed(5)),
     utilityBalance: balance.utilityBalance,
   }));
@@ -117,7 +117,7 @@ const calculateUserBalances = async () => {
 // Map JSON fields to Mongoose schema (now unused, replaced by calculateUserBalances)
 const transformUser = (user) => ({
   userId: user.register_id,
-  CGTBalance: 0,
+  USDTBalance: 0,
   autopoolBalance: 0,
   utilityBalance: 0,
 });

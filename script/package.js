@@ -23,7 +23,7 @@ const transformPackage = (stack_users) => {
     Math.floor((today - createdAt) / (1000 * 60 * 60 * 24)),
     500
   );
-  const poi = +(cgtCoin * 0.005 * daysPassed).toFixed(5);
+  const poi = +(stack_users.amount * 0.005 * daysPassed).toFixed(5);
 
   // Get the register_id for this package's user_id
   const registerId = userRegisterMap[stack_users.user_id];
@@ -42,7 +42,7 @@ const transformPackage = (stack_users) => {
     poi: poi,
     productVoucher: false,
     startDate: stack_users.created_at ? new Date(stack_users.created_at) : null,
-    status: stack_users.status === "1",
+    status: stack_users.status === "1" ? "Active" : "Inactive",
   };
 };
 
